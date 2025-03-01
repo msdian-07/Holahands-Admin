@@ -1,0 +1,376 @@
+/* ===== General Styling ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", "Arial", sans-serif;
+}
+
+/* ===== Background ===== */
+body {
+    background: linear-gradient(to right, #f5e3cb, #f8f4e5);
+    text-align: center;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* ===== Header ===== */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #8B4513, #5A2D0C);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-weight: 600;
+    letter-spacing: 1px;
+    position: relative;
+}
+
+header h1::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 60%;
+    height: 3px;
+    background: #ffc107;
+    border-radius: 5px;
+}
+
+/* ===== Logout Button ===== */
+#logoutButton {
+    background: white;
+    color: #8B4513;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 30px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+#logoutButton:hover {
+    background: #5A2D0C;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== Dashboard Stats Section ===== */
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 30px 0;
+}
+
+/* ===== Stats Cards ===== */
+.stat-card {
+    background: white;
+    padding: 25px;
+    width: 250px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(139, 69, 19, 0.15);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background: linear-gradient(to bottom, #8B4513, #ffc107);
+    border-radius: 15px 0 0 15px;
+}
+
+.stat-card h3 {
+    color: #8B4513;
+    font-size: 18px;
+    margin-bottom: 15px;
+    position: relative;
+    display: inline-block;
+}
+
+.stat-card p {
+    font-size: 28px;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #5A2D0C;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== Section Titles ===== */
+section h2 {
+    color: #8B4513;
+    margin-bottom: 20px;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 10px;
+}
+
+section h2::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(to right, #8B4513, #ffc107);
+    border-radius: 5px;
+}
+
+/* ===== Table Container ===== */
+.table-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 30px auto;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    background: white;
+    padding: 5px;
+}
+
+/* ===== Table Styling ===== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+/* ===== Table Headers ===== */
+th {
+    background: linear-gradient(90deg, #8B4513, #a05e2b);
+    color: white;
+    padding: 15px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+th:first-child {
+    border-top-left-radius: 10px;
+}
+
+th:last-child {
+    border-top-right-radius: 10px;
+}
+
+/* ===== Table Rows ===== */
+td {
+    padding: 15px;
+    border-bottom: 1px solid #f3e0c9;
+    color: #555;
+    transition: all 0.2s ease;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:nth-child(even) td {
+    background: #fffaf0;
+}
+
+tr:nth-child(odd) td {
+    background: #fff5e6;
+}
+
+/* ===== Hover Effect on Rows ===== */
+tr:hover td {
+    background: #f6e6d5;
+    transform: scale(1.01);
+}
+
+/* ===== Custom Scrollbar ===== */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #8B4513;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #5A2D0C;
+}
+
+/* ===== Mehndi-inspired Decorative Elements ===== */
+.stats::before,
+.stats::after {
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%238B4513" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8z"/><path d="M12 6v6l4 2"/></svg>');
+    background-repeat: no-repeat;
+    opacity: 0.1;
+    z-index: -1;
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 1000px) {
+    .stats {
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    
+    .stat-card {
+        width: calc(50% - 20px);
+    }
+}
+
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+    }
+    
+    th, td {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .stats {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .stat-card {
+        width: 90%;
+    }
+
+    #logoutButton {
+        font-size: 14px;
+        padding: 8px 15px;
+    }
+
+}
+/* ===== Search Container ===== */
+.search-container {
+    display: flex;
+    justify-content: flex-end;
+    margin: 20px 30px;
+    position: relative;
+}
+
+/* ===== Search Bar Styling ===== */
+#searchBar {
+    padding: 12px 15px 12px 40px;
+    border: 2px solid #8B4513;
+    border-radius: 25px;
+    width: 250px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background-color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+#searchBar:focus {
+    outline: none;
+    border-color: #5A2D0C;
+    width: 300px;
+    box-shadow: 0 4px 15px rgba(139, 69, 19, 0.15);
+}
+
+/* ===== Search Icon ===== */
+.search-container::before {
+    content: "\f002";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8B4513;
+    font-size: 16px;
+    z-index: 1;
+}
+
+/* ===== Sortable Table Headers ===== */
+th[data-sort] {
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    transition: background-color 0.2s;
+}
+
+th[data-sort]:hover {
+    background: linear-gradient(90deg, #986e51, #a97f56);
+}
+
+/* ===== Sort Indicators ===== */
+th[data-sort]::after {
+    content: "\f0dc"; /* fa-sort */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-left: 5px;
+    font-size: 12px;
+    opacity: 0.5;
+}
+
+th[data-sort].sort-asc::after {
+    content: "\f0de"; /* fa-sort-up */
+    opacity: 1;
+}
+
+th[data-sort].sort-desc::after {
+    content: "\f0dd"; /* fa-sort-down */
+    opacity: 1;
+}
+
+/* ===== No Results Message ===== */
+.no-results {
+    text-align: center;
+    padding: 30px;
+    font-style: italic;
+    color: #8B4513;
+    background: #f9f3ea;
+    font-size: 16px;
+}
+
+/* ===== Responsive Design for Search Bar ===== */
+@media (max-width: 768px) {
+    .search-container {
+        justify-content: center;
+        margin: 20px 10px;
+    }
+    
+    #searchBar {
+        width: 90%;
+    }
+    
+    #searchBar:focus {
+        width: 90%;
+    }
+}

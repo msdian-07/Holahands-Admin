@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mehndi Admin Dashboard</title>
+    <link rel="stylesheet" href="admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1><i class="fas fa-henna"></i> Mehndi Booking Dashboard</h1>
+        <input type="text" id="searchBar" placeholder="Search bookings...">
+        <button id="logoutButton"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </header>
+
+    <!-- ✅ Dashboard Stats Section -->
+    <section class="stats">
+        <div class="stat-card">
+            <h3><i class="fas fa-calendar-check"></i> Total Bookings</h3>
+            <p id="totalBookings">0</p>
+        </div>
+        <div class="stat-card">
+            <h3><i class="fas fa-clock"></i> Recent Booking</h3>
+            <p id="recentBooking">-</p>
+        </div>
+        <div class="stat-card">
+            <h3><i class="fas fa-user-check"></i> Today's Bookings</h3>
+            <p id="todayBookings">0</p>
+        </div>
+    </section>
+
+    <!-- ✅ Bookings Table -->
+    <section id="bookings">
+        <h2><i class="fas fa-list"></i> All Bookings</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th data-sort="id">Booking ID</th>
+                        <th data-sort="name">Client Name</th>
+                        <th data-sort="contact">Contact</th>
+                        <th data-sort="date">Date</th>
+                        <th data-sort="design_id">Design ID</th>
+                        <th data-sort="message">Message</th>
+                        <th data-sort="time">Time</th>
+                        <th data-sort="status">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="bookingTableBody">
+                    <!-- Bookings will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <script type="module" src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mehndi Admin Login</title>
+    <link rel="stylesheet" href="login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+</head>
+<body>
+    <div class="login-container">
+        <!-- Decorative elements -->
+        <div class="login-decoration decoration-1"></div>
+        <div class="login-decoration decoration-2"></div>
+        
+        <!-- Header section -->
+        <div class="login-header">
+            <h2><i class="fas fa-henna"></i> Mehndi Admin Login</h2>
+        </div>
+        
+        <!-- Login form section -->
+        <div class="login-box">
+            <form id="loginForm">
+                <div class="input-group email-group">
+                    <label for="email">Admin Email</label>
+                    <input type="email" id="email" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="input-group password-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+                
+                <button type="submit" class="login-button">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+            
+            <div id="loginError"></div>
+        </div>
+    </div>
+
+    <script type="module" src="login.js"></script>
+    <script>
+        // Show error message with animation when login fails
+        document.getElementById("loginForm").addEventListener("submit", function() {
+            // This will be handled by the Firebase auth in login.js
+            // Just adding this to ensure the error div has the right class when needed
+            const errorDiv = document.getElementById("loginError");
+            if(errorDiv.innerText !== "") {
+                errorDiv.classList.add("show");
+            }
+        });
+    </script>
+</body>
+</html>
