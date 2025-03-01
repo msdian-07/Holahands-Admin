@@ -1,0 +1,198 @@
+/* ===== General Styling ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", "Arial", sans-serif;
+}
+
+/* ===== Background ===== */
+body {
+    background: linear-gradient(to right, #f5e3cb, #f8f4e5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: relative;
+}
+
+/* ===== Background Mehndi Pattern ===== */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%238B4513" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8z"/><path d="M12 6v6l4 2"/></svg>');
+    background-repeat: repeat;
+    opacity: 0.05;
+    z-index: -1;
+}
+
+/* ===== Login Box ===== */
+.login-container {
+    position: relative;
+    width: 400px;
+    z-index: 1;
+}
+
+/* ===== Login Title Header ===== */
+.login-header {
+    background: linear-gradient(135deg, #8B4513, #5A2D0C);
+    color: white;
+    padding: 20px;
+    border-radius: 15px 15px 0 0;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.login-header h2 {
+    font-weight: 600;
+    letter-spacing: 1px;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 10px;
+}
+
+.login-header h2::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #ffc107;
+    border-radius: 5px;
+}
+
+/* ===== Login Box (Card) ===== */
+.login-box {
+    background: white;
+    padding: 30px;
+    border-radius: 0 0 15px 15px;
+    box-shadow: 0 8px 20px rgba(139, 69, 19, 0.15);
+}
+
+/* ===== Input Fields ===== */
+.input-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #8B4513;
+    font-weight: 500;
+    text-align: left;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px 12px 40px;
+    border: 2px solid #d4a76a;
+    border-radius: 30px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+    border-color: #8B4513;
+    outline: none;
+    box-shadow: 0 0 8px rgba(139, 69, 19, 0.2);
+}
+
+/* ===== Input Icons ===== */
+.input-group::before {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    left: 15px;
+    top: 40px;
+    color: #8B4513;
+    font-size: 16px;
+}
+
+.email-group::before {
+    content: "\f0e0"; /* Email icon */
+}
+
+.password-group::before {
+    content: "\f023"; /* Lock icon */
+}
+
+/* ===== Login Button ===== */
+.login-button {
+    background: linear-gradient(to right, #8B4513, #a05e2b);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 30px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin-top: 10px;
+}
+
+.login-button:hover {
+    background: linear-gradient(to right, #5A2D0C, #8B4513);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== Error Message Styling ===== */
+#loginError {
+    margin-top: 15px;
+    color: #e74c3c;
+    font-size: 14px;
+    text-align: center;
+    background-color: #fdecea;
+    padding: 10px;
+    border-radius: 5px;
+    display: none;
+}
+
+#loginError.show {
+    display: block;
+    animation: shakeError 0.5s;
+}
+
+@keyframes shakeError {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+/* ===== Decorative Elements ===== */
+.login-decoration {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%238B4513" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>');
+    background-repeat: no-repeat;
+    background-size: contain;
+    opacity: 0.1;
+}
+
+.decoration-1 {
+    top: -30px;
+    left: -30px;
+    transform: rotate(45deg);
+}
+
+.decoration-2 {
+    bottom: -30px;
+    right: -30px;
+    transform: rotate(-135deg);
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 500px) {
+    .login-container {
+        width: 90%;
+    }
+}
