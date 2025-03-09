@@ -1,7 +1,7 @@
 // ✅ Import Firebase Modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+import { getDatabase, ref, onValue, remove, get } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
 
 // ✅ Firebase Configuration
 const firebaseConfig = {
@@ -51,6 +51,16 @@ document.getElementById("logoutButton").addEventListener("click", function () {
 document.getElementById("searchBar").addEventListener("input", function() {
     searchTerm = this.value.toLowerCase();
     renderBookings();
+});
+
+// ✅ Add Check Duplicates Button Event Listener
+document.getElementById("checkDuplicatesBtn").addEventListener("click", function() {
+    findAndMarkDuplicates();
+});
+
+// ✅ Add Delete All Duplicates Button Event Listener
+document.getElementById("deleteDuplicatesBtn").addEventListener("click", function() {
+    deleteAllDuplicates();
 });
 
 // ✅ Add Sort Event Handlers
@@ -144,7 +154,7 @@ function renderBookings() {
     if (sortedBookings.length === 0) {
         const row = document.createElement("tr");
         row.innerHTML = `
-            <td colspan="8" class="no-results">No bookings found matching your search</td>
+            <td colspan="9" class="no-results">No bookings found matching your search</td>
         `;
         tableBody.appendChild(row);
         return;
@@ -174,6 +184,12 @@ function renderBookings() {
         const displayId = booking.id.substring(0, 6);
 
         let row = document.createElement("tr");
+        
+        // Add duplicate class if marked as duplicate
+        if (booking.isDuplicate) {
+            row.classList.add('duplicate-row');
+        }
+        
         row.innerHTML = `
             <td><span class="booking-id">${displayId}</span></td>
             <td>${booking.name}</td>
@@ -183,9 +199,173 @@ function renderBookings() {
             <td>${booking.message || "N/A"}</td>
             <td>${booking.time || "N/A"}</td>
             <td><span class="status ${statusClass}">${status}</span></td>
+            <td>
+                <button class="delete-btn" data-id="${booking.id}">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </td>
         `;
         tableBody.appendChild(row);
     });
+    
+    // Add event listeners to delete buttons
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const bookingId = this.getAttribute('data-id');
+            deleteBooking(bookingId);
+        });
+    });
+}
+
+// ✅ Delete a booking
+function deleteBooking(bookingId) {
+    if (confirm("Are you sure you want to delete this booking?")) {
+        const bookingRef = ref(database, `bookings/${bookingId}`);
+        
+        remove(bookingRef)
+            .then(() => {
+                showNotification("Booking deleted successfully!", "success");
+                // Refresh is not needed since onValue will trigger
+            })
+            .catch((error) => {
+                console.error("Error deleting booking:", error);
+                showNotification("Error deleting booking. Please try again.", "error");
+            });
+    }
+}
+
+// ✅ Find and mark duplicate bookings
+function findAndMarkDuplicates() {
+    // Reset isDuplicate flag on all bookings
+    allBookings.forEach(booking => {
+        booking.isDuplicate = false;
+    });
+    
+    const duplicates = [];
+    
+    // Create a map to detect duplicates
+    const bookingMap = new Map();
+    
+    allBookings.forEach(booking => {
+        // Create a composite key based on name, contact, and date
+        const key = `${booking.name.toLowerCase()}|${booking.contact}|${booking.date}`;
+        
+        if (bookingMap.has(key)) {
+            // This is a duplicate
+            duplicates.push(booking.id);
+            booking.isDuplicate = true;
+            
+            // Also mark the original booking
+            const originalId = bookingMap.get(key);
+            const originalBooking = allBookings.find(b => b.id === originalId);
+            if (originalBooking) {
+                originalBooking.isDuplicate = true;
+                if (!duplicates.includes(originalId)) {
+                    duplicates.push(originalId);
+                }
+            }
+        } else {
+            // First occurrence
+            bookingMap.set(key, booking.id);
+        }
+    });
+    
+    if (duplicates.length === 0) {
+        showNotification("No duplicate bookings found!", "info");
+    } else {
+        showNotification(`Found ${duplicates.length} duplicate bookings!`, "warning");
+        // Re-render with duplicates highlighted
+        renderBookings();
+    }
+}
+
+// ✅ Delete all duplicate bookings
+function deleteAllDuplicates() {
+    const duplicates = allBookings.filter(booking => booking.isDuplicate);
+    
+    if (duplicates.length === 0) {
+        showNotification("No duplicates to delete!", "info");
+        return;
+    }
+    
+    if (confirm(`Are you sure you want to delete all ${duplicates.length} duplicate bookings? This cannot be undone.`)) {
+        const deletePromises = [];
+        const duplicateMap = new Map();
+        
+        // Group duplicates by their composite key and keep only the oldest booking
+        duplicates.forEach(booking => {
+            const key = `${booking.name.toLowerCase()}|${booking.contact}|${booking.date}`;
+            
+            if (!duplicateMap.has(key)) {
+                duplicateMap.set(key, booking);
+            } else {
+                const existingBooking = duplicateMap.get(key);
+                const existingDate = new Date(existingBooking.id.substring(0, 13));
+                const currentDate = new Date(booking.id.substring(0, 13));
+                
+                // If this booking is newer, keep the older one and delete this one
+                if (currentDate > existingDate) {
+                    const bookingRef = ref(database, `bookings/${booking.id}`);
+                    deletePromises.push(remove(bookingRef));
+                } else {
+                    // Otherwise delete the older entry and keep this one
+                    const bookingRef = ref(database, `bookings/${existingBooking.id}`);
+                    deletePromises.push(remove(bookingRef));
+                    duplicateMap.set(key, booking);
+                }
+            }
+        });
+        
+        Promise.all(deletePromises)
+            .then(() => {
+                showNotification(`Successfully deleted ${deletePromises.length} duplicate bookings!`, "success");
+                // onValue will update the UI
+            })
+            .catch(error => {
+                console.error("Error deleting duplicates:", error);
+                showNotification("Error deleting duplicates. Please try again.", "error");
+            });
+    }
+}
+
+// ✅ Notification system
+function showNotification(message, type) {
+    // Create notification element
+    const notification = document.createElement("div");
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                          type === 'error' ? 'fa-exclamation-circle' : 
+                          type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i>
+            <span>${message}</span>
+        </div>
+        <button class="notification-close"><i class="fas fa-times"></i></button>
+    `;
+    
+    // Add to DOM
+    document.body.appendChild(notification);
+    
+    // Add close button functionality
+    notification.querySelector('.notification-close').addEventListener('click', function() {
+        notification.classList.add('notification-hide');
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    });
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        notification.classList.add('notification-hide');
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    }, 5000);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.classList.add('notification-show');
+    }, 10);
 }
 
 // ✅ Update Stats UI with filtered bookings
@@ -256,7 +436,7 @@ function animateStats() {
     });
 }
 
-// Add this CSS to your admin.css file
+// Add CSS for deletion and duplicate handling
 document.head.insertAdjacentHTML('beforeend', `
 <style>
 .status {
@@ -308,8 +488,14 @@ document.head.insertAdjacentHTML('beforeend', `
 
 .search-container {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
+}
+
+.duplicate-actions {
+    display: flex;
+    gap: 10px;
 }
 
 #searchBar {
@@ -363,6 +549,173 @@ th[data-sort].sort-desc::after {
 
 .fas {
     margin-right: 5px;
+}
+
+/* Delete button styling */
+.delete-btn {
+    background-color: #ffebee;
+    color: #e53935;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.delete-btn:hover {
+    background-color: #e53935;
+    color: white;
+    transform: scale(1.1);
+}
+
+.delete-btn .fas {
+    margin-right: 0;
+}
+
+/* Style for duplicate rows */
+.duplicate-row {
+    background-color: #ffecb3 !important;
+    position: relative;
+}
+
+.duplicate-row::before {
+    content: "Duplicate";
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 10px;
+    background: #ff9800;
+    color: white;
+    padding: 2px 5px;
+    border-radius: 0 0 5px 0;
+    font-weight: bold;
+}
+
+/* Manage duplicate buttons */
+.action-btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#checkDuplicatesBtn {
+    background-color: #fff8e1;
+    color: #ff9800;
+    border: 1px solid #ff9800;
+}
+
+#checkDuplicatesBtn:hover {
+    background-color: #ff9800;
+    color: white;
+}
+
+#deleteDuplicatesBtn {
+    background-color: #ffebee;
+    color: #e53935;
+    border: 1px solid #e53935;
+}
+
+#deleteDuplicatesBtn:hover {
+    background-color: #e53935;
+    color: white;
+}
+
+/* Notification system */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 350px;
+    max-width: 90%;
+    transform: translateX(120%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+}
+
+.notification.notification-show {
+    transform: translateX(0);
+}
+
+.notification.notification-hide {
+    transform: translateX(120%);
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.notification.success {
+    border-left: 4px solid #4caf50;
+}
+
+.notification.error {
+    border-left: 4px solid #f44336;
+}
+
+.notification.warning {
+    border-left: 4px solid #ff9800;
+}
+
+.notification.info {
+    border-left: 4px solid #2196f3;
+}
+
+.notification.success i {
+    color: #4caf50;
+}
+
+.notification.error i {
+    color: #f44336;
+}
+
+.notification.warning i {
+    color: #ff9800;
+}
+
+.notification.info i {
+    color: #2196f3;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #999;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background 0.2s ease;
+}
+
+.notification-close:hover {
+    background: #f0f0f0;
+}
+
+.notification i {
+    font-size: 18px;
 }
 </style>
 `);
